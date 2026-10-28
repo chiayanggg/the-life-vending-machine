@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Life Vending Machine 《人生贩卖机》 — AI Film Production Studio</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --card: #151a24;
+      --border: #263042;
+      --gold: #f5c469;
+      --cyan: #4fd1c5;
+      --red: #f56565;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 32px 24px 80px;
+    }
+    .container { max-width: 1220px; margin: 0 auto; }
+    header {
+      background: linear-gradient(135deg, #161f30 0%, #0d121c 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+    }
+    h1 { font-size: 28px; color: var(--gold); margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 15px; }
+    .tools-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .tool-pill {
+      background: #1c2433;
+      border: 1px solid #2e3b52;
+      border-radius: 10px;
+      padding: 12px 16px;
+      text-decoration: none;
+      color: var(--text);
+      transition: 0.2s;
+      display: block;
+    }
+    .tool-pill:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .tool-pill strong { color: var(--cyan); display: block; font-size: 15px; }
+    .tool-pill span { font-size: 12.5px; color: var(--muted); }
+    .section-title {
+      font-size: 22px;
+      color: #fff;
+      margin: 36px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(520px, 1fr));
+      gap: 20px;
+    }
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .shot-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .shot-img-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+    .shot-img-wrap img, .shot-img-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .shot-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(11, 14, 20, 0.88);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .save-badge {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: monospace;
+    }
+    .shot-body { padding: 18px 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+    .shot-title { font-size: 16px; font-weight: 700; color: #fff; }
+    .prompt-box {
+      background: #0d1118;
+      border: 1px solid #232c3d;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13.5px;
+      color: #cbd5e1;
+      font-family: Consolas, monospace;
+      flex: 1;
+    }
+    .btn-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    button.copy-btn, a.dl-btn {
+      background: var(--gold);
+      color: #0b0e14;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 15px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    a.dl-btn {
+      background: #1e293b;
+      color: var(--cyan);
+      border: 1px solid var(--cyan);
+    }
+    button.copy-btn:hover, a.dl-btn:hover { filter: brightness(1.12); }
+    button.copy-btn.copied { background: #38a169; color: #fff; }
+    .voice-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .voice-info { flex: 1; min-width: 260px; }
+    .voice-meta { font-size: 12px; color: var(--cyan); font-weight: 700; margin-bottom: 4px; }
+    .voice-direction { font-size: 12.5px; color: var(--gold); margin-bottom: 6px; font-style: italic; }
+    .voice-line { font-size: 15px; color: #fff; font-weight: 500; }
+    .instructions-banner {
+      background: rgba(79, 209, 197, 0.08);
+      border: 1px solid var(--cyan);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    .instructions-banner ol { padding-left: 20px; margin-top: 8px; }
+    .instructions-banner li { margin-bottom: 6px; }
+    code {
+      background: #1e293b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--gold);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎬 The Life Vending Machine 《人生贩卖机》 — AI Film Production Studio</h1>
+      <p class="subtitle">Malaysian AI Short Film Competition Hub · Character References, 11 Keyframe Shots, Motion Prompts & Emotional Voice Studio.</p>
+      
+      <div class="tools-bar">
+        <a class="tool-pill" href="https://klingai.com" target="_blank">
+          <strong>1. Kling AI (Free Daily Credits) ↗</strong>
+          <span>Best for realistic facial emotion, crying & hospital scenes (Use Image-to-Video)</span>
+        </a>
+        <a class="tool-pill" href="https://hailuoai.video" target="_blank">
+          <strong>2. Hailuo AI / MiniMax (Free Trial) ↗</strong>
+          <span>Best for smooth cinematic acting, pouring soup & walking through the KL tunnel</span>
+        </a>
+        <a class="tool-pill" href="https://aistudio.google.com/prompts/new_chat?model=gemini-omni-1.1-flash" target="_blank">
+          <strong>3. Gemini Omni 1.1 Flash ↗</strong>
+          <span>Google AI Studio Video Generation & Start-to-End Frame Transitions</span>
+        </a>
+        <a class="tool-pill" href="https://elevenlabs.io" target="_blank">
+          <strong>4. ElevenLabs (Free 10,000 Chars) ↗</strong>
+          <span>Use "Speech-to-Speech" or v3/v4 Expressive Dialogue for Malaysian emotion</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- PREVIEW VIDEOS -->
+    <div class="section-title">
+      <span>🎥 Preview Videos (Full Animatic & Opening 10s Test)</span>
+    </div>
+    <div class="grid">
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <video controls preload="metadata" poster="assets/keyframes/02_scene1_vending_machine.jpg">
+            <source src="The_Life_Vending_Machine_Full_Film.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Full 3:39 Storyboard Motion Film (20 Shots + Bilingual Subtitles)</div>
+          <div class="btn-row">
+            <a class="dl-btn" href="The_Life_Vending_Machine_Full_Film.mp4" download>⬇️ Download Full MP4</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <video controls preload="metadata" poster="assets/keyframes/01_prologue_terrace_house.jpg">
+            <source src="Opening_10s_Real_AI_Film.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Opening 10s Test (ElevenLabs v3 Emotional Dialogue + Rain/Soup SFX)</div>
+          <div class="btn-row">
+            <a class="dl-btn" href="Opening_10s_Real_AI_Film.mp4" download>⬇️ Download 10s MP4</a>
+            <a class="dl-btn" href="assets/real_voices/opening_10s_dialogue.mp3" download>🎵 ElevenLabs Dialogue MP3</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARACTER & SCENE REFERENCE SHEETS -->
+    <div class="section-title">
+      <span>👤 Character & Master Scene Reference Sheets</span>
+      <span style="font-size:13px; color:var(--muted);">Attach these as Subject/Character Reference in Kling / Veo / Omni Flash</span>
+    </div>
+    <div class="grid">
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/references/ryan_reference.jpg" alt="Ryan Reference" />
+          <div class="shot-badge">REF: RYAN (26yo Malaysian Professional)</div>
+        </div>
+        <div class="shot-body">
+          <div class="btn-row">
+            <a class="dl-btn" href="assets/references/ryan_reference.jpg" download="ryan_reference.jpg">⬇️ Download Ryan Reference</a>
+          </div>
+        </div>
+      </div>
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/references/mum_reference.jpg" alt="Mum Reference" />
+          <div class="shot-badge">REF: MUM (Late-50s Malaysian Mother)</div>
+        </div>
+        <div class="shot-body">
+          <div class="btn-row">
+            <a class="dl-btn" href="assets/references/mum_reference.jpg" download="mum_reference.jpg">⬇️ Download Mum Reference</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11 KEYFRAMES -->
+    <div class="section-title">
+      <span>🎞️ Part 1: The 11 Keyframes → Real Moving Video Clips (Image-to-Video)</span>
+      <span style="font-size:13px; color:var(--muted);">Click "Download Image", upload to Kling/Hailuo, and paste the Motion Prompt</span>
+    </div>
+
+    <div class="grid">
+      <!-- Clip 01 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/01_prologue_terrace_house.jpg" alt="Clip 01" />
+          <div class="shot-badge">CLIP 01 · PROLOGUE (HOME)</div>
+          <div class="save-badge">Save as: clip_01.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Prologue A — Mum Pouring Warm Soup while Ryan Stresses</div>
+          <div class="prompt-box" id="p1">Cinematic real-life film shot. The Malaysian mother gently pours hot steaming herbal soup from the stainless steel thermal flask into the porcelain bowl with a warm, caring expression, while her tired son Ryan rubs his forehead in exhaustion looking at his laptop. Raindrops trickle down the nako louvre windows behind them. Subtle camera push-in.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p1', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/01_prologue_terrace_house.jpg" download="01_prologue_terrace_house.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 02 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/01b_prologue_folder.jpg" alt="Clip 02" />
+          <div class="shot-badge">CLIP 02 · PROLOGUE (FOLDER)</div>
+          <div class="save-badge">Save as: clip_02.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Prologue B — Mum's Hands Placing Receipt into Insurance Folder</div>
+          <div class="prompt-box" id="p2">Cinematic tabletop close-up. The older woman's gentle hands carefully slide the paper payment receipt inside the worn transparent plastic zip-folder labeled MEDICAL POLICY and smooth it down lovingly. Soft white steam rises continuously from the hot bowl of soup beside her hand. Warm tungsten lighting.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p2', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/01b_prologue_folder.jpg" download="01b_prologue_folder.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 03 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/02_scene1_vending_machine.jpg" alt="Clip 03" />
+          <div class="shot-badge">CLIP 03 · SCENE 1 (UNDERPASS)</div>
+          <div class="save-badge">Save as: clip_03.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Scene 1A — Ryan Discovering the Glowing Life Vending Machine</div>
+          <div class="prompt-box" id="p3">Cinematic sci-fi thriller shot in a wet Kuala Lumpur pedestrian tunnel at night. Ryan steps forward slowly and stops in front of the glowing vintage-futuristic vending machine, looking up in awe at the glowing canisters WEALTH, HEALTH, and TIME. Neon amber and cyan lights flicker and reflect in the wet floor puddles. Slow camera dolly in.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p3', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/02_scene1_vending_machine.jpg" download="02_scene1_vending_machine.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 04 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/03_scene1_confirm_trade.jpg" alt="Clip 04" />
+          <div class="shot-badge">CLIP 04 · SCENE 1 (CONFIRM)</div>
+          <div class="save-badge">Save as: clip_04.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Scene 1B — Ryan Pressing [CONFIRM] to Trade 20% of His Health</div>
+          <div class="prompt-box" id="p4">Close-up cinematic shot. Ryan stares intensely at the glowing CRT screen reading PRICE: 20% OF YOUR HEALTH. He hesitates for a moment, swallows hard, then firmly presses his index finger onto the glowing red CONFIRM button. Red and amber neon light pulses across his face.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p4', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/03_scene1_confirm_trade.jpg" download="03_scene1_confirm_trade.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 05 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/04_scene2_corporate_success.jpg" alt="Clip 05" />
+          <div class="shot-badge">CLIP 05 · SCENE 2 (SUCCESS)</div>
+          <div class="save-badge">Save as: clip_05.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Scene 2A — Ryan Shaking Hands in the KLCC Glass Boardroom</div>
+          <div class="prompt-box" id="p5">Cinematic tracking shot inside a luxury Kuala Lumpur high-rise boardroom at golden hour. Ryan in a sharp charcoal suit smiles confidently and shakes hands firmly across the table with a senior executive while colleagues around the room clap and nod approvingly.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p5', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/04_scene2_corporate_success.jpg" download="04_scene2_corporate_success.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 06 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/05_scene2_vertigo_washroom.jpg" alt="Clip 06" />
+          <div class="shot-badge">CLIP 06 · SCENE 2 (VERTIGO)</div>
+          <div class="save-badge">Save as: clip_06.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Scene 2B — Ryan Hit by Sudden Vertigo & Exhaustion at the Sink</div>
+          <div class="prompt-box" id="p6">Cinematic mirror reflection shot inside an office washroom. Ryan grips the marble sink edges tightly, looking pale and exhausted. He suddenly winces in pain, closes his eyes, and sways slightly as a wave of dizziness and vertigo hits him, breathing heavily.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p6', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/05_scene2_vertigo_washroom.jpg" download="05_scene2_vertigo_washroom.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 07 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/06_scene3_hospital_crisis.jpg" alt="Clip 07" />
+          <div class="shot-badge">CLIP 07 · SCENE 3 (HOSPITAL BILL)</div>
+          <div class="save-badge">Save as: clip_07.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Scene 3 — Ryan Shocked by the RM 38,000 Hospital Deposit Outside ICU</div>
+          <div class="prompt-box" id="p7">Emotional handheld cinema shot in a bright Malaysian hospital corridor. Ryan stands in panic holding the RM 38,000 deposit form with trembling hands. He looks down at the bill in despair, then turns his head to look worriedly through the glass window at his mother lying in the hospital bed.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p7', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/06_scene3_hospital_crisis.jpg" download="06_scene3_hospital_crisis.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 08 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/07_scene4_slam_cancel.jpg" alt="Clip 08" />
+          <div class="shot-badge">CLIP 08 · SCENE 4 (SLAM CANCEL)</div>
+          <div class="save-badge">Save as: clip_08.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Scene 4 — Emotional Climax: Ryan Refuses the Trade & Slams [CANCEL]</div>
+          <div class="prompt-box" id="p8">Intense dramatic close-up in the rain-soaked underpass. Drenched in rain with tears in his eyes, Ryan trembles in emotional agony in front of the glowing vending machine, then clenches his jaw and slams his palm forcefully onto the glowing white CANCEL button. Rain falls heavily in the background.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p8', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/07_scene4_slam_cancel.jpg" download="07_scene4_slam_cancel.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 09 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/08_scene5_hospital_payoff.jpg" alt="Clip 09" />
+          <div class="shot-badge">CLIP 09 · SCENE 5 (HOSPITAL PAYOFF)</div>
+          <div class="save-badge">Save as: clip_09.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Scene 5 — Tearful Gratitude: Mum's Insurance Policy Saves the Family</div>
+          <div class="prompt-box" id="p9">Deeply emotional cinema shot in a sunlit hospital ward. Ryan kneels beside the hospital bed holding the worn plastic insurance folder, crying tears of relief and gratitude as he holds his mother's hand. His mother smiles warmly and tenderly pats his hand to comfort him.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p9', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/08_scene5_hospital_payoff.jpg" download="08_scene5_hospital_payoff.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 10 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/09_scene6_morning_soup.jpg" alt="Clip 10" />
+          <div class="shot-badge">CLIP 10 · SCENE 6 (MORNING SOUP)</div>
+          <div class="save-badge">Save as: clip_10.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Scene 6A — Role Reversal: Healthy Ryan Pouring Soup for Mum</div>
+          <div class="prompt-box" id="p10">Warm sunny morning shot inside the Malaysian terrace house dining room. Golden sunlight streams through the louvre windows as a healthy, smiling Ryan pours steaming herbal soup from the stainless steel thermal flask into a porcelain bowl for his smiling mother at the table.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p10', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/09_scene6_morning_soup.jpg" download="09_scene6_morning_soup.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clip 11 -->
+      <div class="shot-card">
+        <div class="shot-img-wrap">
+          <img src="assets/keyframes/10_scene6_walk_away.jpg" alt="Clip 11" />
+          <div class="shot-badge">CLIP 11 · SCENE 6 (WALK AWAY)</div>
+          <div class="save-badge">Save as: clip_11.mp4</div>
+        </div>
+        <div class="shot-body">
+          <div class="shot-title">Scene 6B — Finale: Ryan Walks Past the Darkening Vending Machine</div>
+          <div class="prompt-box" id="p11">Wide cinematic shot in the pedestrian underpass. Ryan walks calmly forward toward the bright exit with a peaceful, knowing smile, walking right past the vending machine without stopping, while the vending machine lights flicker and turn off behind him.</div>
+          <div class="btn-row">
+            <button class="copy-btn" onclick="copyText('p11', this)">📋 Copy Motion Prompt</button>
+            <a class="dl-btn" href="assets/keyframes/10_scene6_walk_away.jpg" download="10_scene6_walk_away.jpg">⬇️ Download Keyframe</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 2: EMOTIONAL VOICEOVER STUDIO -->
+    <div class="section-title">
+      <span>🎙️ Part 2: Emotional Voiceover Script (ElevenLabs v3 / Speech-to-Speech)</span>
+    </div>
+
+    <div class="voice-card">
+      <div class="voice-info">
+        <div class="voice-meta">VOICE 01 · RYAN (Prologue) → Save as: <code>voice_01.mp3</code></div>
+        <div class="voice-direction">Acting Direction: Exhausted, rubbing temples, lets out a long tired sigh before speaking in natural Malaysian cadence.</div>
+        <div class="voice-line" id="v1">[sighs deeply, exhausted] "Ma... everything's going up lah. Why are you still paying for that old policy every month? Keep the cash better..."</div>
+      </div>
+      <button class="copy-btn" onclick="copyText('v1', this)">📋 Copy Line</button>
+    </div>
+
+    <div class="voice-card">
+      <div class="voice-info">
+        <div class="voice-meta">VOICE 02 · MUM (Prologue) → Save as: <code>voice_02.mp3</code></div>
+        <div class="voice-direction">Acting Direction: Gentle, soft, warm Malaysian motherly tone, unhurried and full of quiet love.</div>
+        <div class="voice-line" id="v2">[warm, gentle smile] "Just a little bit only... Drink your soup first, ah? Before it gets cold."</div>
+      </div>
+      <button class="copy-btn" onclick="copyText('v2', this)">📋 Copy Line</button>
+    </div>
+
+    <div class="voice-card">
+      <div class="voice-info">
+        <div class="voice-meta">VOICE 03 · RYAN (Scene 1 — First Trade) → Save as: <code>voice_03.mp3</code></div>
+        <div class="voice-direction">Acting Direction: Whispering to himself in the dark tunnel, nervous breath, trying to convince himself he's invincible.</div>
+        <div class="voice-line" id="v3">[nervous breath, whispered intensity] "Price... my health? ... I'm twenty-six. I'm strong. What's a little exhaustion... if we finally make it?"</div>
+      </div>
+      <button class="copy-btn" onclick="copyText('v3', this)">📋 Copy Line</button>
+    </div>
+
+    <div class="voice-card">
+      <div class="voice-info">
+        <div class="voice-meta">VOICE 04 · MUM & RYAN (Scene 2 — The Vertigo Warning) → Save as: <code>voice_04.mp3</code></div>
+        <div class="voice-direction">Acting Direction: Mum sounds worried on a phone voice note; Ryan coughs weakly and brushes her off.</div>
+        <div class="voice-line" id="v4">MUM: "Ryan ah... earning money is important, but don't forget to take care of your body, okay?" — RYAN [coughs weakly, breathless]: "I know lah, Ma... soon."</div>
+      </div>
+      <button class="copy-btn" onclick="copyText('v4', this)">📋 Copy Line</button>
+    </div>
+
+    <div class="voice-card">
+      <div class="voice-info">
+        <div class="voice-meta">VOICE 05 · RYAN (Scene 3 — Hospital Panic) → Save as: <code>voice_05.mp3</code></div>
+        <div class="voice-direction">Acting Direction: Trembling, breathless panic, voice shaking as he stares at the RM 38,000 surgical deposit.</div>
+        <div class="voice-line" id="v5">[shaky breath, voice trembling with panic] "Thirty-eight thousand Ringgit... I thought climbing faster meant I was ready. ... I wasn't ready for anything."</div>
+      </div>
+      <button class="copy-btn" onclick="copyText('v5', this)">📋 Copy Line</button>
+    </div>
+
+    <div class="voice-card">
+      <div class="voice-info">
+        <div class="voice-meta">VOICE 06 · RYAN (Scene 4 — The Climax at the Machine) → Save as: <code>voice_06.mp3</code></div>
+        <div class="voice-direction">Acting Direction: Crying in the rain, desperate, realizing the machine cannot protect his mother.</div>
+        <div class="voice-line" id="v6">[choked up, crying in the rain] "It wants all of my remaining health... Wait—this machine only takes. It cannot protect! ... No. Cancel!"</div>
+      </div>
+      <button class="copy-btn" onclick="copyText('v6', this)">📋 Copy Line</button>
+    </div>
+
+    <div class="voice-card">
+      <div class="voice-info">
+        <div class="voice-meta">VOICE 07 · RYAN & MUM (Scene 5 — Hospital Ward Tearful Payoff) → Save as: <code>voice_07.mp3</code></div>
+        <div class="voice-direction">Acting Direction: The emotional heart of the film. Ryan's voice cracks in tears; Mum speaks weakly but tenderly.</div>
+        <div class="voice-line" id="v7">RYAN [voice breaking, holding back sobs]: "Ma... you kept this policy all these years?" — MUM [weak, loving whisper]: "I hoped we'd never need it... But I never wanted my son to trade his health... just to save mine."</div>
+      </div>
+      <button class="copy-btn" onclick="copyText('v7', this)">📋 Copy Line</button>
+    </div>
+
+    <div class="voice-card">
+      <div class="voice-info">
+        <div class="voice-meta">VOICE 08 · RYAN (Scene 6 — Final Reflection) → Save as: <code>voice_08.mp3</code></div>
+        <div class="voice-direction">Acting Direction: Calm, warm, healed, speaking with deep gratitude and peace.</div>
+        <div class="voice-line" id="v8">[calm, warm, reflective] "Not every price in life has to be paid alone. Tomorrow is unpredictable... but love prepares for it today."</div>
+      </div>
+      <button class="copy-btn" onclick="copyText('v8', this)">📋 Copy Line</button>
+    </div>
+
+  </div>
+
+  <script>
+    function copyText(id, btn) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.innerText;
+        btn.innerText = "✓ Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.innerText = orig;
+          btn.classList.remove("copied");
+        }, 1800);
+      });
+    }
+  </script>
+</body>
+</html>

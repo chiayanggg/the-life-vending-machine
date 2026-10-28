@@ -1,0 +1,10 @@
+.env
+.env.*
+.env.local
+__pycache__/
+assets/audio_temp/
+assets/audio_film/
+assets/segments_temp/
+assets/segments_film/
+assets/compiled_real_temp/
+*.pyc

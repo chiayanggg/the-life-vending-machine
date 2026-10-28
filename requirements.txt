@@ -1,0 +1,6 @@
+elevenlabs
+python-dotenv
+gradio_client
+imageio-ffmpeg
+Pillow
+requests
